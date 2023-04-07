@@ -10,8 +10,8 @@ from heyoo import WhatsApp
 
 class WhatsAppWrapper:
     API_URL = "https://graph.facebook.com/v13.0/"
-    API_TOKEN = os.getenv.get('WHATSAPP_API_TOKEN')
-    NUMBER_ID = os.getenv.get('WHATSAPP_NUMBER_ID')
+    API_TOKEN = os.getenv('WHATSAPP_API_TOKEN')
+    NUMBER_ID = os.getenv('WHATSAPP_NUMBER_ID')
 
     def __init__(self):
         self.headers = {
