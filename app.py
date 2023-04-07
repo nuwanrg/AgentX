@@ -24,7 +24,7 @@ def whatsapp_webhook():
 
 
 
-@app.route("/webhook", methods=["POST"])
+@app.route("/webhook", methods=['GET', 'POST'])
 def webhook_whatsapp():
     print("The hook is invoked with payload.")
     """__summary__: Get message from the webhook"""

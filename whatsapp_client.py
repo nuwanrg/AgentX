@@ -1,4 +1,4 @@
-# app/whatsapp_client.py
+#whatsapp_client.py
 
 import os
 import requests
