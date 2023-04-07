@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request,json
 
-from app.whatsapp_client import WhatsAppWrapper
+from whatsapp_client import WhatsAppWrapper
 from utils import find_key_value
 
 app = Flask(__name__)
