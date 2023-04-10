@@ -62,12 +62,15 @@ class WhatsAppWrapper:
         messages = value["messages"][0]
         msg_from = messages["from"]
         print("msg_from", msg_from)
-        # Do anything with the response
-        # Sending a message to a phone number to confirm the webhook is working
-        response =  self.send_text_message(msg_from)
+        
+
+        profile = find_key_value(data, "profile")
+        name = find_key_value(profile, "name")
+        message = 'Hi '+ name+ '. Thank you. We have received your message `' +messages["text"]["body"]+'`.'
+        response =  self.send_text_message(msg_from,message)
         return response
 
-    def send_text_message(self, phone_number):
+    def send_text_message(self, phone_number, message):
         print("send_text_message Invoked")
         payload = json.dumps({
             "messaging_product": "whatsapp",
@@ -76,7 +79,7 @@ class WhatsAppWrapper:
             "type": "text",
             "text": { 
                 "preview_url": "false",
-                "body": "Text Reply Test"
+                "body": message
             }
         })
 
