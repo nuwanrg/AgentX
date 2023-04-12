@@ -1,10 +1,18 @@
+import config
+import os
 from flask import Flask, jsonify, request,json
 
 from whatsapp_client import WhatsAppWrapper
 from utils import find_key_value
-
+from database import create_tables, save_message_data, search_message_data,drop_tables
 app = Flask(__name__)
-VERIFY_TOKEN = "THT_VERIFY_TOKEN"
+print('__name__', __name__);
+
+#Enable this to drop the tables when the application starts. This has to handle different way when the application is deployed in production
+drop_tables();
+
+# Call the create_table function to set up the table when the application starts
+#create_tables()
 
 @app.route("/")
 def hello_world():
@@ -15,7 +23,6 @@ def whatsapp_webhook():
     # You can access query parameters using request.args.get()
     # For example, if your webhook has a query parameter 'message':
     # message = request.args.get('message', '')
-
     response = {
         "status": "success",
         "message": "WhatsApp webhook received"
@@ -26,24 +33,21 @@ def whatsapp_webhook():
 
 @app.route("/webhook", methods=['GET', 'POST'])
 def webhook_whatsapp():
-    print("The hook is invoked with payload.")
+    print("The hook is invoked with payload...")
     """__summary__: Get message from the webhook"""
 
     if request.method == "GET":
-        if request.args.get('hub.verify_token') == VERIFY_TOKEN:
+        if request.args.get('hub.verify_token') == os.getenv('WHATSAPP_VERIFY_TOKEN'):
             return request.args.get('hub.challenge')
         return "Authentication failed. Invalid Token."
-    
-    client = WhatsAppWrapper()
     
     data = request.get_json()
     print("data", data)
 
-    #category = find_key_value(data, "category")
-    #print("category ", category) 
-        # if category == "user_initiated":
-        # print("user_initiated")
-        # return '', 204
+    #Save the data to the database
+    save_message_data(data)
+
+    client = WhatsAppWrapper()
     type = find_key_value(data, "type")
     print("type ", type)
    
@@ -56,34 +60,21 @@ def webhook_whatsapp():
         response = client.handle_image_message(data)
     elif type == "video":
         response = client.handle_video_message(data)
-    
-
-    # Access data in the dictionary
-    object_type = data["object"]
-    entry = data["entry"][0]
-    entry_id = entry["id"]
-    changes = entry["changes"][0]
-    value = changes["value"]
-    messaging_product = value["messaging_product"]
-    metadata = value["metadata"]
-    display_phone_number = metadata["display_phone_number"]
-    phone_number_id = metadata["phone_number_id"]
-    contacts = value["contacts"][0]
-    profile = contacts["profile"]
-    name = profile["name"]
-    wa_id = contacts["wa_id"]
-    messages = value["messages"][0]
-    msg_from = messages["from"]
-    print("msg_from", msg_from)
-
-
-
-
-    # Do anything with the response
-    # Sending a message to a phone number to confirm the webhook is working
 
     return '', 200
 
+
+@app.route("/search", methods=['GET'])
+def search_messages():
+    print("Searching messages...")
+    """__summary__: Search message from the database"""
+
+    results = search_message_data(request.args.get('from'));
+    return jsonify(results), 200
+
+
+
+#some test code
 @app.route("/send_template_message", methods=["POST"])
 def send_template_message():
     print("send_template_message Invoked")
@@ -115,4 +106,5 @@ def send_template_message():
     ), 200
     
 if __name__ == '__main__':
+    print('Starting Python Flask Server For WhatsApp Integration...')
     app.run(debug=True)
