@@ -9,10 +9,10 @@ app = Flask(__name__)
 print('__name__', __name__);
 
 #Enable this to drop the tables when the application starts. This has to handle different way when the application is deployed in production
-drop_tables();
+drop_tables()
 
 # Call the create_table function to set up the table when the application starts
-#create_tables()
+create_tables()
 
 @app.route("/")
 def hello_world():
