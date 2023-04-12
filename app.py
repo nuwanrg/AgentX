@@ -56,8 +56,8 @@ def webhook_whatsapp():
         return '', 204
     elif type == "text":
         response = client.handle_text_message(data)
-    elif type == "image":
-        response = client.handle_image_message(data)
+    elif type == "image" or type == "video":
+        response = client.handle_media_message(data,type)
     elif type == "video":
         response = client.handle_video_message(data)
 

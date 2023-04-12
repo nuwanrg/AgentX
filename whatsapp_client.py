@@ -105,25 +105,25 @@ class WhatsAppWrapper:
 
         return response
     
-    def handle_image_message(self, data):
+    def handle_media_message(self, data, type):
         #media_id = find_key_value(data, "id")
         phone_number = find_key_value(data, "from")
-        image = find_key_value(data, "image")
-        media_id=find_key_value(image, "id")
-        caption=find_key_value(image, "caption")
-        file_type=find_key_value(image, "mime_type")
+        media = find_key_value(data, type)
+        media_id=find_key_value(media, "id")
+        caption=find_key_value(media, "caption")
+        file_type=find_key_value(media, "mime_type")
 
 
-        image_endpoint = f"https://graph.facebook.com/v16.0/{media_id}?access_token={self.API_TOKEN}"
-        response = requests.get(image_endpoint, stream=True)
+        media_endpoint = f"https://graph.facebook.com/v16.0/{media_id}?access_token={self.API_TOKEN}"
+        response = requests.get(media_endpoint, stream=True)
         file_url= response.url
 
-        #print("media_id ", media_id)
-        # print("phone_number ", phone_number)
-        # print("image ", image)
-        # print("media_id ", media_id)
-        # print("file_url ", file_url)
-        # print("file_type ", file_type)
+
+        print("phone_number ", phone_number)
+        print("media ", media)
+        print("media_id ", media_id)
+        print("file_url ", file_url)
+        print("file_type ", file_type)
    
         file_object = self.download_file_from_whatsapp(media_id, self.API_TOKEN)
 
@@ -145,7 +145,10 @@ class WhatsAppWrapper:
 
         
         messenger = WhatsApp(self.API_TOKEN,  phone_number_id=self.NUMBER_ID)
-        messenger.send_image(media_id,phone_number,link=False )
+        if type=='image':
+            messenger.send_image(media_id,phone_number,link=False )
+        elif type=='video': 
+            messenger.send_video(media_id,phone_number,link=False )
         return
     
     def download_file_from_whatsapp(self,media_id, access_token):
