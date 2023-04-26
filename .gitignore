@@ -1,5 +1,6 @@
 .env
 ## Original ignores
+lib
 autogpt/keys.py
 autogpt/*json
 autogpt/node_modules/
