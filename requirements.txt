@@ -4,5 +4,12 @@ gunicorn
 requests 
 python-dotenv
 heyoo
-psycopg2
+psycopg2-binary==2.9.6
 boto3
+langchain
+openai
+google-search-results
+psycopg2_binary
+pinecone-client
+colorama
+singleton

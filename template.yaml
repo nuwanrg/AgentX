@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Your Flask application as an AWS Lambda function with API Gateway
+
+Resources:
+  MyFunction: # Replace with the actual name of your Lambda function
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: . # Update this with the correct path to your Flask application code
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Events:
+        ApiGateway:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+
+Outputs:
+  ApiGatewayUrl:
+    Description: API Gateway endpoint URL
+    Value: !Sub https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/
