@@ -1,12 +1,9 @@
 from __future__ import annotations
-
 import time
 from ast import List
-
 import openai
 from colorama import Fore, Style
 from openai.error import APIError, RateLimitError
-
 from aiengine.config import Config
 from logs import logger
 
@@ -25,7 +22,7 @@ def create_chat_completion(
     Args:
         messages (list[dict[str, str]]): The messages to send to the chat completion
         model (str, optional): The model to use. Defaults to None.
-        temperature (float, optional): The temperature to use. Defaults to 0.9.
+        temperature (float, optional): The temperature to use. Defaults to 0
         max_tokens (int, optional): The max tokens to use. Defaults to None.
 
     Returns:
@@ -43,21 +40,12 @@ def create_chat_completion(
     for attempt in range(num_retries):
         backoff = 2 ** (attempt + 2)
         try:
-            if CFG.use_azure:
-                response = openai.ChatCompletion.create(
-                    deployment_id=CFG.get_azure_deployment_id_for_model(model),
-                    model=model,
-                    messages=messages,
-                    temperature=temperature,
-                    max_tokens=max_tokens,
-                )
-            else:
-                response = openai.ChatCompletion.create(
-                    model=model,
-                    messages=messages,
-                    temperature=temperature,
-                    max_tokens=max_tokens,
-                )
+            response = openai.ChatCompletion.create(
+                model=model,
+                messages=messages,
+                temperature=temperature,
+                max_tokens=max_tokens,
+            )
             break
         except RateLimitError:
             if CFG.debug_mode:
@@ -68,7 +56,7 @@ def create_chat_completion(
             if not warned_user:
                 logger.double_check(
                     f"Please double check that you have setup a {Fore.CYAN + Style.BRIGHT}PAID{Style.RESET_ALL} OpenAI API Account. "
-                    + f"You can read more here: {Fore.CYAN}https://github.com/Significant-Gravitas/Auto-GPT#openai-api-keys-configuration{Fore.RESET}"
+                    + f"You can read more here: {Fore.CYAN}#openai-api-keys-configuration{Fore.RESET}"
                 )
                 warned_user = True
         except APIError as e:
@@ -88,8 +76,8 @@ def create_chat_completion(
         logger.typewriter_log(
             "FAILED TO GET RESPONSE FROM OPENAI",
             Fore.RED,
-            "Auto-GPT has failed to get a response from OpenAI's services. "
-            + f"Try running Auto-GPT again, and if the problem the persists try running it with `{Fore.CYAN}--debug{Fore.RESET}`.",
+            "Failed to get a response from OpenAI's services. "
+            + f"Try running again, and if the problem the persists try running it with `{Fore.CYAN}--debug{Fore.RESET}`.",
         )
         logger.double_check()
         if CFG.debug_mode:
