@@ -11,5 +11,5 @@ openai
 google-search-results
 psycopg2_binary
 pinecone-client
-colorama
+colorama==0.4.6
 singleton
