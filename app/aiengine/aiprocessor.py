@@ -1,12 +1,13 @@
 import sys
 import os
-from .config.config import Config, check_openai_api_key
-from monitor.logs import logger
+from app.aiengine.config.config import Config, check_openai_api_key
+from app.monitor.logs import logger
 from prompt import construct_prompt
 
 def process_message(data)->str:
 
-    system_prompt = construct_prompt()
+    print("Processing message")
+    system_prompt = construct_prompt(data)
 
 
     logger.typewriter_log(

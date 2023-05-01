@@ -43,29 +43,24 @@ class AIConfig:
     SAVE_FILE = os.path.join(os.path.dirname(__file__), "..", "ai_settings.yaml")
 
     @staticmethod
-    def load(config_file: str = SAVE_FILE) -> "AIConfig":
+    def load(data) -> "AIConfig":
         """
         Returns class object with parameters (ai_name, ai_role, ai_goals) loaded from
-          yaml file if yaml file exists,
         else returns class with no parameters.
 
         Parameters:
-           config_file (int): The path to the config yaml file.
-             DEFAULT: "../ai_settings.yaml"
+          data
 
         Returns:
             cls (object): An instance of given cls object
         """
 
-        try:
-            with open(config_file, encoding="utf-8") as file:
-                config_params = yaml.load(file, Loader=yaml.FullLoader)
-        except FileNotFoundError:
-            config_params = {}
 
-        ai_name = config_params.get("ai_name", "")
-        ai_role = config_params.get("ai_role", "")
-        ai_goals = config_params.get("ai_goals", [])
+        #todo lead history if required
+
+        ai_name = 'TEST AI'
+        ai_role = 'Search Engine'
+        ai_goals = {'1. List various types of fundings that tech startups can raise. For example "VC Funding", "Seed funding", "Crowd Funding" etc.'}
         # type: Type[AIConfig]
         return AIConfig(ai_name, ai_role, ai_goals)
 
@@ -108,7 +103,7 @@ class AIConfig:
             ""
         )
 
-        from autogpt.prompt import get_prompt
+        from aiengine.prompt import get_prompt
 
         # Construct full prompt
         full_prompt = (
