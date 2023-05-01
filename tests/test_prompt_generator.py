@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from app.aiengine.promptgenerator import PromptGenerator
+from aiengine.promptgenerator import PromptGenerator
 
 
 class TestPromptGenerator(TestCase):

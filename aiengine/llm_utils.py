@@ -4,7 +4,7 @@ from ast import List
 import openai
 from colorama import Fore, Style
 from openai.error import APIError, RateLimitError
-from app.aiengine.config import Config
+from aiengine.config import Config
 from logs import logger
 
 CFG = Config()

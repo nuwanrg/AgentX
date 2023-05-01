@@ -1,21 +1,21 @@
 from colorama import Fore
 
-from app.aiengine.config import Config
-from app.aiengine.config.ai_config import AIConfig
-from app.aiengine.config.config import Config
-from app.monitor.logs import logger
-from app.aiengine.promptgenerator import PromptGenerator
+from aiengine.config import Config
+from aiengine.config.ai_config import AIConfig
+from aiengine.config.config import Config
+from monitor.logs import logger
+from aiengine.promptgenerator import PromptGenerator
 
 
 CFG = Config()
 
-def construct_prompt(data) -> str:
+def construct_prompt(text_msg) -> str:
     """Construct the prompt for the AI to respond to
 
     Returns:
         str: The prompt string
     """
-    config = AIConfig.load(data)
+    config = AIConfig.load(text_msg)
 
 
     return config.construct_full_prompt()

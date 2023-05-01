@@ -1,16 +1,18 @@
 import os
 from dotenv import load_dotenv
 load_dotenv()
+
 from flask import Flask, jsonify, request,json
 
 from message_handler import handle_whatsapp_message
-from utils import find_key_value
-from aiengine.config import Config
+#from data_handler import save_whatsapp_messages
+#from utils import find_key_value
+
+
 
 app = Flask(__name__)
-print('__name__', __name__)
+# print('__name__', __name__)
 
-cfg=Config()
 
 #setup_database()
 

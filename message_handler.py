@@ -1,7 +1,8 @@
 # message_handler.py
-from utils import find_key_value
-from data.data_handler import save_whatsapp_messages
+
 from whatsapp.whatsapp_client import send_text_message, handle_media_message, handle_video_message
+from data_handler import save_whatsapp_messages
+from utils import find_key_value
 from aiengine.aiprocessor import process_message
 
 
@@ -30,3 +31,4 @@ def handle_whatsapp_message(data):
         response = handle_media_message(data, type)
     elif type == "video":
         response = handle_video_message(data)
+

@@ -6,7 +6,7 @@ import yaml
 from colorama import Fore
 from dotenv import load_dotenv
 
-from app.aiengine.config.singleton import Singleton
+from aiengine.config.singleton import Singleton
 
 load_dotenv(verbose=True)
 
@@ -23,7 +23,7 @@ class Config(metaclass=Singleton):
         # self.continuous_limit = 0
         # self.speak_mode = False
         # self.skip_reprompt = False
-        # self.allow_downloads = False
+        self.allow_downloads = False
         # self.skip_news = False
 
         #Database
@@ -59,6 +59,14 @@ class Config(metaclass=Singleton):
         #PINECONE
         self.pinecone_api_key = os.getenv("PINECONE_API_KEY")
         self.pinecone_region = os.getenv("PINECONE_ENV")
+
+        self.huggingface_audio_to_text_model = os.getenv(
+            "HUGGINGFACE_AUDIO_TO_TEXT_MODEL"
+        )
+
+        self.execute_local_commands = (
+            os.getenv("EXECUTE_LOCAL_COMMANDS", "False") == "True"
+        )
 
         openai.api_key = self.openai_api_key
 

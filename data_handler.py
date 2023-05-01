@@ -3,7 +3,7 @@ import psycopg2
 import json
 from psycopg2 import pool
 import requests
-from data.file_handler import upload_file_to_s3, generate_s3_url
+from file.file_handler import upload_file_to_s3, generate_s3_url
 from utils import find_key_value
 from datetime import datetime
 from aiengine.config import Config, check_openai_api_key
@@ -85,15 +85,15 @@ def create_tables():
 def save_whatsapp_messages(data):
 
     type = find_key_value(data, "type")
-    print("type ", type)
+    # print("type ", type)
 
-    if type == "user_initiated": #user_initiated messages are system generated, no need to save
-        print("user_initiated")
-        return '', 204
-    elif type == "text":
-        response = save_whatsapp_text_messages(data)
-    elif type == "image" or type == "video":
-        response = save_whatsapp_media_messages(data, type)
+    # if type == "user_initiated": #user_initiated messages are system generated, no need to save
+    #     print("user_initiated")
+    #     return '', 204
+    # elif type == "text":
+    #     response = save_whatsapp_text_messages(data)
+    # elif type == "image" or type == "video":
+    #     response = save_whatsapp_media_messages(data, type)
 
 
 def save_whatsapp_text_messages(json_data):
