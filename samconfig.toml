@@ -8,3 +8,6 @@ confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
 disable_rollback = true
 image_repositories = []
+
+aws lambda create-function --function-name whatsapp_webhook --runtime python3.9 --role arn:aws:iam::727210836757:role/YourLambdaRole --handler app.lambda_handler --zip-file fileb://deployment-package.zip
+aws lambda create-function --function-name whatsapp_webhook --runtime python3.9 --role arn:aws:iam::727210836757:role/YourLambdaRole --handler app.lambda_handler --code S3Bucket=myaiapp-build,S3Key=path/to/deployment-package.zip
