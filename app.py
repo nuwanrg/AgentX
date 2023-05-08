@@ -8,7 +8,6 @@ from message_handler import handle_whatsapp_message
 #from data_handler import save_whatsapp_messages
 #from utils import find_key_value
 from aiengine.config import Config
-from aws_lambda_wsgi import AwsLambdaWsgi
 
 
 
@@ -45,8 +44,6 @@ def whatsapp_webhook():
 #     dataHandler = DataHandler()
 #     results = dataHandler.search_message_data(request.args.get('from'));
 #     return jsonify(results), 200
-
-lambda_handler = AwsLambdaWsgi(app).handler
 
 if __name__ == '__main__':
     print('Starting Python Flask Server For WhatsApp Integration...')

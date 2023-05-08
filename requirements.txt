@@ -13,4 +13,3 @@ google-search-results
 pinecone-client
 colorama==0.4.6
 singleton
-aws_lambda_wsgi
