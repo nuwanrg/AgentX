@@ -23,6 +23,8 @@ pinecone.create_namespace(namespace_name=PINECONE_NAMESPACE)
 
 print("pinecone namespace created")
 
+def __init__
+
 def embed_text(text):
     # Request GPT-3 embeddings
     url = "https://api.openai.com/v1/engines/davinci-codex/completions"

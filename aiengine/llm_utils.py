@@ -5,7 +5,7 @@ import openai
 from colorama import Fore, Style
 from openai.error import APIError, RateLimitError
 from aiengine.config import Config
-from logs import logger
+from monitor.logs import logger
 
 CFG = Config()
 
@@ -28,6 +28,7 @@ def create_chat_completion(
     Returns:
         str: The response from the chat completion
     """
+
     response = None
     num_retries = 10
     warned_user = False
@@ -46,6 +47,8 @@ def create_chat_completion(
                 temperature=temperature,
                 max_tokens=max_tokens,
             )
+            print("Response from openai", response)
+            return response['choices'][0]['message']['content']
             break
         except RateLimitError:
             if CFG.debug_mode:
@@ -84,3 +87,37 @@ def create_chat_completion(
             raise RuntimeError(f"Failed to get response after {num_retries} retries")
         else:
             quit(1)
+
+
+def create_embedding_with_ada(text) -> list:
+    """Create an embedding with text-ada-002 using the OpenAI SDK"""
+    num_retries = 10
+    for attempt in range(num_retries):
+        backoff = 2 ** (attempt + 2)
+        try:
+            if CFG.use_azure:
+                return openai.Embedding.create(
+                    input=[text],
+                    engine=CFG.get_azure_deployment_id_for_model(
+                        "text-embedding-ada-002"
+                    ),
+                )["data"][0]["embedding"]
+            else:
+                return openai.Embedding.create(
+                    input=[text], model="text-embedding-ada-002"
+                )["data"][0]["embedding"]
+        except RateLimitError:
+            pass
+        except APIError as e:
+            if e.http_status == 502:
+                pass
+            else:
+                raise
+            if attempt == num_retries - 1:
+                raise
+        if CFG.debug_mode:
+            print(
+                Fore.RED + "Error: ",
+                f"API Bad gateway. Waiting {backoff} seconds..." + Fore.RESET,
+            )
+        time.sleep(backoff)

@@ -1,0 +1,10 @@
+singleton-0.1.0.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
+singleton-0.1.0.dist-info/METADATA,sha256=3_KfrUtiYSCD78rT1yBAznwYDTRxx30rVQMZowQf_K8,241
+singleton-0.1.0.dist-info/RECORD,,
+singleton-0.1.0.dist-info/REQUESTED,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
+singleton-0.1.0.dist-info/WHEEL,sha256=2wepM1nk4DS4eFpYrW1TTqPcoGNfHhhO_i5m4cOimbo,92
+singleton-0.1.0.dist-info/top_level.txt,sha256=ZHkXd4_CmcWk6RdFRhs7r1brcIxuiZmzdSFt4quBXO8,10
+singleton/__init__.py,sha256=rJ1L3-YlnZqjoC5t9q5aAfZuryXy_3jbNWBBZG4vS5o,23
+singleton/__pycache__/__init__.cpython-39.pyc,,
+singleton/__pycache__/singleton.cpython-39.pyc,,
+singleton/singleton.py,sha256=pwTmk3ImRn-tDL1otVHa0LUZUdsXAXg3QqJR3D13OfY,2683

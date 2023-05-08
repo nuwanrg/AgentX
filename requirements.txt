@@ -1,7 +1,7 @@
 pip==23.0.1
 Flask
 gunicorn
-requests 
+requests>=2.28.2 
 python-dotenv
 heyoo
 psycopg2-binary==2.9.6
@@ -13,3 +13,4 @@ psycopg2_binary
 pinecone-client
 colorama==0.4.6
 singleton
+aws_lambda_wsgi

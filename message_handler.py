@@ -8,12 +8,19 @@ from aiengine.aiprocessor import process_message
 
 def handle_whatsapp_message(data):
     #Deconstruct the message
+    print("incoming_message data ", data)
     phone_number = find_key_value(data, "from")
     name = find_key_value(data, "name")
     incoming_message = find_key_value(data, "body")
 
+    catergory = find_key_value(data, "category")
+
+    if catergory == "business_initiated":
+        return '', 204
+    
+
     # Save incoming messages from Whatsapp to the database
-    save_whatsapp_messages(data)
+    #save_whatsapp_messages(data)
 
     # Process the message in the AI engine
     response = process_message(incoming_message)
