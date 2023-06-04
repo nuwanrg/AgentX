@@ -8,7 +8,9 @@ from utils import find_key_value
 from datetime import datetime
 from aiengine.config import Config, check_openai_api_key
 from whatsapp.whatsapp_client import download_file_from_whatsapp
-
+from connection_pool import ConnectionPool
+from user_handler import create_user
+from user_dto import UserDTO
 cfg = Config()
 
 db_pool = pool.SimpleConnectionPool(minconn=1, maxconn=10,
@@ -18,82 +20,30 @@ db_pool = pool.SimpleConnectionPool(minconn=1, maxconn=10,
                                     host=cfg.db_host,
                                     port=cfg.db_port)
 
-def setup_database():
-    drop_tables()
-    create_tables()
-
-def drop_tables():
-    # Drop the table if it exists
-    drop_table_query = "DROP TABLE IF EXISTS media_files;"
-    conn = db_pool.getconn()
-    try:
-        cursor = conn.cursor()
-        try:
-
-            # media_files
-            cursor.execute(drop_table_query)
-            conn.commit()
-
-        except psycopg2.Error as e:
-            print(f"Error droping tables : {e}")
-
-        finally:
-            cursor.close()
-    finally:
-        db_pool.putconn(conn)
-
-
-def create_tables():
-    create_table_query = """
-    CREATE TABLE IF NOT EXISTS whatsapp_messages (
-        id SERIAL PRIMARY KEY,
-        message JSONB NOT NULL
-    );
-    """
-
-    # IF NOT EXISTS
-    create_media_file_table = """
-    CREATE TABLE media_files ( 
-        id SERIAL PRIMARY KEY,
-        media_id VARCHAR(255) NOT NULL,
-        caption VARCHAR(1000) NULL,
-        file_url VARCHAR(1000) NOT NULL,
-        file_type VARCHAR(50) NOT NULL,
-        created_at TIMESTAMPTZ NOT NULL
-    );
-    """
-
-    conn = db_pool.getconn()
-    try:
-        cursor = conn.cursor()
-        try:
-            cursor.execute(create_table_query)
-            conn.commit()
-
-            cursor.execute(create_media_file_table)
-            conn.commit()
-
-        except psycopg2.Error as e:
-            print(f"Error creating tables : {e}")
-
-        finally:
-            cursor.close()
-    finally:
-        db_pool.putconn(conn)
+# to use the connection pool in future
+# connection_pool = ConnectionPool(
+#     minconn=1,
+#     maxconn=10,
+#     host=cfg.db_host,
+#     port=cfg.db_port,
+#     dbname='your_database',
+#     user='your_username',
+#     password='your_password'
+# )
 
 
 def save_whatsapp_messages(data):
-
     type = find_key_value(data, "type")
-    # print("type ", type)
 
-    # if type == "user_initiated": #user_initiated messages are system generated, no need to save
-    #     print("user_initiated")
-    #     return '', 204
-    # elif type == "text":
-    #     response = save_whatsapp_text_messages(data)
-    # elif type == "image" or type == "video":
-    #     response = save_whatsapp_media_messages(data, type)
+    # update message count
+
+    if type == "user_initiated":  # user_initiated messages are system generated, no need to save
+        print("user_initiated")
+        return '', 204
+    elif type == "text":
+        response = save_whatsapp_text_messages(data)
+    elif type == "image" or type == "video":
+        response = save_whatsapp_media_messages(data, type)
 
 
 def save_whatsapp_text_messages(json_data):
@@ -113,18 +63,17 @@ def save_whatsapp_text_messages(json_data):
     finally:
         db_pool.putconn(conn)
 
-def save_whatsapp_media_messages(data,type):
+
+def save_whatsapp_media_messages(data, type):
     phone_number = find_key_value(data, "from")
     media = find_key_value(data, type)
-    media_id=find_key_value(media, "id")
-    caption=find_key_value(media, "caption")
-    file_type=find_key_value(media, "mime_type")
-
+    media_id = find_key_value(media, "id")
+    caption = find_key_value(media, "caption")
+    file_type = find_key_value(media, "mime_type")
 
     media_endpoint = f"https://graph.facebook.com/v16.0/{media_id}?access_token={cfg.whatsapp_api_token}"
     response = requests.get(media_endpoint, stream=True)
-    file_url= response.url
-
+    file_url = response.url
 
     print("phone_number ", phone_number)
     print("media ", media)
@@ -134,20 +83,19 @@ def save_whatsapp_media_messages(data,type):
 
     file_object = download_file_from_whatsapp(media_id)
 
-    if file_object:    
+    if file_object:
         s3_object_name = media_id
         bucket_name = cfg.s3_bucket_dev
- 
-        print( "file_object ", file_object)            
+
+        print("file_object ", file_object)
         s3_url = upload_file_to_s3(file_object, bucket_name, s3_object_name)
         print("s3_url ", s3_url)
 
-        #Save image metadata to DB
+        # Save image metadata to DB
         file_url = 'none'
         generate_s3_url(bucket_name, s3_object_name)
         print("file_url ", file_url)
-        save_media_metadata(media_id, caption, file_url, file_type )
-
+        save_media_metadata(media_id, caption, file_url, file_type)
 
 
 def save_media_metadata(media_id, caption, file_url, file_type):
@@ -160,7 +108,7 @@ def save_media_metadata(media_id, caption, file_url, file_type):
         cursor = conn.cursor()
         try:
             cursor.execute(query, (media_id, caption, file_url,
-                        file_type, datetime.now()))
+                                   file_type, datetime.now()))
             conn.commit()
             print('Saved successfully to media_files table')
 

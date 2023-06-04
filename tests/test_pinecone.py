@@ -33,14 +33,17 @@ class TestPinecone(TestCase):
         sample_text1 = "Nuwan was born in Sri Lanka."
         cls.pineconeMemory.add(sample_text1)
 
-        sample_text2 = "Steven was born in Sri Lanka."
+        sample_text2 = "Steven was born in Belgium."
         cls.pineconeMemory.add(sample_text2)
 
-        query = "Who were born in Sri Lanka?"
+        sample_text3 = "Nobody was born in nowhere."
+        cls.pineconeMemory.add(sample_text2)
+
+        query = "Who was born in Belgium?"
         search_results= cls.pineconeMemory.get(query)
         print('search_results: ',search_results)
 
-        cls.assertIn(sample_text1, search_results)
+        cls.assertIn(sample_text2, search_results)
 
     def test_get_stats(cls):
         stats= cls.pineconeMemory.get_stats()

@@ -1,4 +1,4 @@
-from aiengine.memory.local_cache import LocalCache
+from aiengine.memory.local import LocalCache
 from aiengine.memory.no_memory import NoMemory
 
 # List of supported memory backends

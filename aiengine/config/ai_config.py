@@ -43,7 +43,7 @@ class AIConfig:
     SAVE_FILE = os.path.join(os.path.dirname(__file__), "..", "ai_settings.yaml")
 
     @staticmethod
-    def load(data) -> "AIConfig":
+    def load(data, cfg) -> "AIConfig":
         """
         Returns class object with parameters (ai_name, ai_role, ai_goals) loaded from
         else returns class with no parameters.
@@ -58,9 +58,9 @@ class AIConfig:
 
         #todo lead history if required
 
-        ai_name = 'TEST AI'
-        ai_role = 'Search Engine'
-        ai_goals = {'1. List various types of fundings that tech startups can raise. For example "VC Funding", "Seed funding", "Crowd Funding" etc.'}
+        ai_name = cfg.ai_name
+        ai_role = cfg.ai_role
+        ai_goals = {data}
         # type: Type[AIConfig]
         return AIConfig(ai_name, ai_role, ai_goals)
 

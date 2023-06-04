@@ -88,6 +88,8 @@ class Config(metaclass=Singleton):
         self.memory_backend = os.getenv("MEMORY_BACKEND", "local")
 
         openai.api_key = self.openai_api_key
+        self.ai_name = os.getenv("ai_name", "AgentX")
+        self.ai_role = os.getenv("ai_name", "Execute Tasks")
 
 
 

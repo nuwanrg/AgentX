@@ -11,6 +11,43 @@ CFG = Config()
 
 openai.api_key = CFG.openai_api_key
 
+
+def call_ai_function(
+    function: str, args: list, description: str, model: str | None = None
+) -> str:
+    print('Call ai function called')
+    """Call an AI function
+
+    This is a magic function that can do anything with no-code. See
+    https://github.com/Torantulino/AI-Functions for more info.
+
+    Args:
+        function (str): The function to call
+        args (list): The arguments to pass to the function
+        description (str): The description of the function
+        model (str, optional): The model to use. Defaults to None.
+
+    Returns:
+        str: The response from the function
+    """
+    if model is None:
+        model = CFG.smart_llm_model
+    # For each arg, if any are None, convert to "None":
+    args = [str(arg) if arg is not None else "None" for arg in args]
+    # parse args to comma separated string
+    args = ", ".join(args)
+    messages = [
+        {
+            "role": "system",
+            "content": f"You are now the following python function: ```# {description}"
+            f"\n{function}```\n\nOnly respond with your `return` value.",
+        },
+        {"role": "user", "content": args},
+    ]
+
+    return create_chat_completion(model=model, messages=messages, temperature=0)
+
+
 def create_chat_completion(
     messages: list,  # type: ignore
     model: str | None = None,
@@ -47,7 +84,7 @@ def create_chat_completion(
                 temperature=temperature,
                 max_tokens=max_tokens,
             )
-            print("Response from openai", response)
+            # print("Response from openai", response)
             return response['choices'][0]['message']['content']
             break
         except RateLimitError:
@@ -84,7 +121,8 @@ def create_chat_completion(
         )
         logger.double_check()
         if CFG.debug_mode:
-            raise RuntimeError(f"Failed to get response after {num_retries} retries")
+            raise RuntimeError(
+                f"Failed to get response after {num_retries} retries")
         else:
             quit(1)
 

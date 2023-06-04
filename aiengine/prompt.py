@@ -15,7 +15,7 @@ def construct_prompt(text_msg) -> str:
     Returns:
         str: The prompt string
     """
-    config = AIConfig.load(text_msg)
+    config = AIConfig.load(text_msg, CFG)
 
 
     return config.construct_full_prompt()
